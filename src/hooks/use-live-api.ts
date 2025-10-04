@@ -38,12 +38,18 @@ export function useLiveAPI(options: LiveClientOptions): UseLiveAPIResults {
   const client = useMemo(() => new GenAILiveClient(options), [options]);
   const audioStreamerRef = useRef<AudioStreamer | null>(null);
 
-  const [model, setModel] = useState<string>("models/gemini-2.0-flash-exp");
-  const [config, setConfig] = useState<LiveConnectConfig>({});
+  const [model, setModel] = useState<string>("models/gemini-2.5-flash-preview-tts");
+
+  // 🔧 Define apenas o idioma para português (sem escolher voz)
+  const [config, setConfig] = useState<LiveConnectConfig>({
+    voiceConfig: {
+      languageCode: "pt-BR" // ou "pt-PT" se quiser português europeu
+    }
+  });
+
   const [connected, setConnected] = useState(false);
   const [volume, setVolume] = useState(0);
 
-  // register audio for streaming server -> speakers
   useEffect(() => {
     if (!audioStreamerRef.current) {
       audioContext({ id: "audio-out" }).then((audioCtx: AudioContext) => {
@@ -53,27 +59,17 @@ export function useLiveAPI(options: LiveClientOptions): UseLiveAPIResults {
             setVolume(ev.data.volume);
           })
           .then(() => {
-            // Successfully added worklet
+            // Worklet registrado com sucesso
           });
       });
     }
   }, [audioStreamerRef]);
 
   useEffect(() => {
-    const onOpen = () => {
-      setConnected(true);
-    };
-
-    const onClose = () => {
-      setConnected(false);
-    };
-
-    const onError = (error: ErrorEvent) => {
-      console.error("error", error);
-    };
-
+    const onOpen = () => setConnected(true);
+    const onClose = () => setConnected(false);
+    const onError = (error: ErrorEvent) => console.error("error", error);
     const stopAudioStreamer = () => audioStreamerRef.current?.stop();
-
     const onAudio = (data: ArrayBuffer) =>
       audioStreamerRef.current?.addPCM16(new Uint8Array(data));
 
@@ -96,9 +92,7 @@ export function useLiveAPI(options: LiveClientOptions): UseLiveAPIResults {
   }, [client]);
 
   const connect = useCallback(async () => {
-    if (!config) {
-      throw new Error("config has not been set");
-    }
+    if (!config) throw new Error("config has not been set");
     client.disconnect();
     await client.connect(model, config);
   }, [client, config, model]);
@@ -106,7 +100,7 @@ export function useLiveAPI(options: LiveClientOptions): UseLiveAPIResults {
   const disconnect = useCallback(async () => {
     client.disconnect();
     setConnected(false);
-  }, [setConnected, client]);
+  }, [client]);
 
   return {
     client,
