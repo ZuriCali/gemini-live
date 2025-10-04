@@ -53,7 +53,7 @@ function AltairComponent() {
       systemInstruction: {
         parts: [
           {
-            text: 'You are my helpful assistant. Any time I ask you for a graph call the "render_altair" function I have provided you. Dont ask for additional information just make your best judgement.',
+            text: 'Você é meu assistente prestativo. Responda em português. Sempre que eu pedir um gráfico, chame a função "render_altair" que eu forneci. Não peça informações adicionais, apenas use o seu melhor julgamento.',
           },
         ],
       },
