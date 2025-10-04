@@ -3,7 +3,7 @@ import Select from "react-select";
 import { useLiveAPIContext } from "../../contexts/LiveAPIContext";
 
 const voiceOptions = [
-  { value: "Puck", label: "Puck" },
+  { value: "pt-BR-Neural2-A", label: "pt-BR-Neural2-A" },
   { value: "Charon", label: "Charon" },
   { value: "Kore", label: "Kore" },
   { value: "Fenrir", label: "Fenrir" },
