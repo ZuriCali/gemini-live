@@ -40,12 +40,12 @@ export function useLiveAPI(options: LiveClientOptions): UseLiveAPIResults {
 
   const [model, setModel] = useState<string>("models/gemini-2.5-flash-preview-tts");
 
-  // 🔧 Define apenas o idioma para português (sem escolher voz)
-  const [config, setConfig] = useState<LiveConnectConfig>({
-    voiceConfig: {
-      languageCode: "pt-BR" // ou "pt-PT" se quiser português europeu
-    }
-  });
+  // Define apenas o idioma para português (compatível com TS)
+  const [config, setConfig] = useState<LiveConnectConfig>(
+    {
+      languageCode: "pt-BR",
+    } as any
+  );
 
   const [connected, setConnected] = useState(false);
   const [volume, setVolume] = useState(0);
@@ -58,9 +58,7 @@ export function useLiveAPI(options: LiveClientOptions): UseLiveAPIResults {
           .addWorklet<any>("vumeter-out", VolMeterWorket, (ev: any) => {
             setVolume(ev.data.volume);
           })
-          .then(() => {
-            // Worklet registrado com sucesso
-          });
+          .then(() => {});
       });
     }
   }, [audioStreamerRef]);
