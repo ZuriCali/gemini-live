@@ -44,7 +44,7 @@ function AltairComponent() {
   const { client, setConfig, setModel } = useLiveAPIContext();
 
   useEffect(() => {
-    setModel("models/gemini-2.0-flash-exp");
+    setModel("models/gemini-2.5-flash-native-audio-preview-09-2025");
     setConfig({
       responseModalities: [Modality.AUDIO],
       speechConfig: {
@@ -53,7 +53,7 @@ function AltairComponent() {
       systemInstruction: {
         parts: [
           {
-            text: 'You are my helpful assistant. Any time I ask you for a graph call the "render_altair" function I have provided you. Dont ask for additional information just make your best judgement.',
+            text: 'Tu és o meu assistente prestativo. Sempre que eu te pedir um gráfico, chama a função "render_altair" que eu te forneci. Não peças informações adicionais apenas faz o teu melhor julgamento.',
           },
         ],
       },

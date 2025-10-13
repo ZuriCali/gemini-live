@@ -18,9 +18,11 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { GenAILiveClient } from "../lib/genai-live-client";
 import { LiveClientOptions } from "../types";
 import { AudioStreamer } from "../lib/audio-streamer";
-import { audioContext } from "../lib/utils";
 import VolMeterWorket from "../lib/worklets/vol-meter";
-import { LiveConnectConfig } from "@google/genai";
+import { LiveConnectConfig, Modality } from "@google/genai";
+import { audioContext } from "../lib/utils";
+// import osmioSystemPrompt from "../lib/prompts/osmio-system-prompt";
+// Importando o conteúdo do prompt do arquivo JavaScript
 
 export type UseLiveAPIResults = {
   client: GenAILiveClient;
@@ -32,16 +34,30 @@ export type UseLiveAPIResults = {
   connect: () => Promise<void>;
   disconnect: () => Promise<void>;
   volume: number;
+  user: any;
+  setUser: (user: any) => void;
 };
 
 export function useLiveAPI(options: LiveClientOptions): UseLiveAPIResults {
   const client = useMemo(() => new GenAILiveClient(options), [options]);
   const audioStreamerRef = useRef<AudioStreamer | null>(null);
 
-  const [model, setModel] = useState<string>("models/gemini-2.0-flash-exp");
-  const [config, setConfig] = useState<LiveConnectConfig>({});
+  const [model, setModel] = useState<string>("models/gemini-2.5-flash-preview-native-audio-dialog");
+  const [config, setConfig] = useState<LiveConnectConfig>({
+    // Definindo a modalidade de resposta como AUDIO para garantir que a voz seja extraída corretamente
+    responseModalities: [Modality.AUDIO],
+    speechConfig: {
+      voiceConfig: {
+        prebuiltVoiceConfig: {
+          voiceName: "Charon",
+        },
+      },
+    },
+    systemInstruction: "Você é um assistente de IA."
+  });
   const [connected, setConnected] = useState(false);
   const [volume, setVolume] = useState(0);
+  const [user, setUser] = useState<any>(null);
 
   // register audio for streaming server -> speakers
   useEffect(() => {
@@ -118,5 +134,7 @@ export function useLiveAPI(options: LiveClientOptions): UseLiveAPIResults {
     connect,
     disconnect,
     volume,
+    user,
+    setUser,
   };
 }
